@@ -1,0 +1,7 @@
+# Fast.com intergration for speed tests. Service: fastdotcom.speedtest
+fastdotcom:
+  # Minimum time interval between updates. Supported formats: scan_interval: 'HH:MM:SS', scan_interval: 'HH:MM' and Time period dictionary (see example below).
+#  scan_interval: '01:00' # time (optional, default: 60 minutes)
+    # At least one must be specified: days, hours, minutes, seconds, milliseconds.
+  # turn manual mode on or off. Manual mode will disable scheduled speedtests.
+  manual: true #boolean (optional, default: false)

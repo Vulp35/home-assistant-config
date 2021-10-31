@@ -17,6 +17,7 @@ image
 media
 
 # Specific file ignores
+www/astrospheric.html
 .config_entries.json
 .uuid
 ip_bans.yaml

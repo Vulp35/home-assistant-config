@@ -1,1 +1,371 @@
-[]
+- id: '1605559561700'
+  alias: Lighthouse
+  description: Turns on the outside lights if either of us aren't home during sunset.
+  trigger:
+  - platform: numeric_state
+    entity_id: sun.sun
+    attribute: elevation
+    below: '2'
+  condition:
+  - condition: or
+    conditions:
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: device_tracker.pixel_5
+        state: home
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: device_tracker.pixel_4a
+        state: home
+  action:
+  - type: turn_on
+    device_id: b5c4ae675c65486eecb97a2819404cd4
+    entity_id: switch.driveway
+    domain: switch
+  - type: turn_on
+    device_id: 212eb3e7bae439c72a947005bb3429cc
+    entity_id: switch.front_porch
+    domain: switch
+  mode: single
+- id: '1605722125685'
+  alias: Theater Lights
+  description: Start Theater when a movie or tv show is started on Plex
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.plex_living_room_plex_for_android_tv_family_fire
+    - media_player.plex_living_room_plex_for_tivo_tivo
+    to: playing
+    from: idle
+  condition: []
+  action:
+  - scene: scene.theater
+  mode: single
+- id: '1606805699006'
+  alias: Front Porch Auto Off
+  description: Turns off front porch when drive gets turned off
+  trigger:
+  - platform: device
+    type: turned_off
+    device_id: b5c4ae675c65486eecb97a2819404cd4
+    entity_id: switch.driveway
+    domain: switch
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 212eb3e7bae439c72a947005bb3429cc
+    entity_id: switch.front_porch
+    domain: switch
+  action:
+  - type: turn_off
+    device_id: 212eb3e7bae439c72a947005bb3429cc
+    entity_id: switch.front_porch
+    domain: switch
+  mode: single
+- id: '1606806163443'
+  alias: Morning Lights
+  description: Turn on lamp in Kitchen light in morning
+  trigger:
+  - platform: time
+    at: 05:30:00
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - type: turn_on
+    device_id: f3512b60b26e8a31d4242f0f21d6558d
+    entity_id: switch.kitchen_sink
+    domain: switch
+  - type: turn_on
+    device_id: e0bbd1a6b87359e87c19a03c3f578fa2
+    entity_id: switch.tv_lamp
+    domain: switch
+  mode: single
+- id: '1606891522476'
+  alias: Sunset Lights
+  description: Turns on the window lamp at sunset
+  trigger:
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 22a9928140f445de4ab1356d464c72d3
+    entity_id: switch.window_lamp
+    domain: switch
+  - type: turn_on
+    device_id: aeb06bd76cdd2fe01e03b42a0c624b3d
+    entity_id: switch.christmas_tree
+    domain: switch
+  mode: single
+- id: '1607228975607'
+  alias: Speedtest.net
+  description: Run speed tests at certain times as long as there is no more than 1
+    person using Plex
+  trigger:
+  - platform: time
+    at: 02:00:00
+  - platform: time
+    at: 08:00:00
+  - platform: time
+    at: '14:00:00'
+  - platform: time
+    at: '20:00:00'
+  condition:
+  - condition: not
+    conditions:
+    - type: is_value
+      condition: device
+      device_id: c427a11d3dbf9711919227956e16321f
+      entity_id: sensor.plex_yavin_4
+      domain: sensor
+      below: -1
+  action:
+  - service: speedtestdotnet.speedtest
+    data: {}
+  mode: single
+- id: '1608095570822'
+  alias: Chirstmas Tree Auto Off
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00
+  - platform: time
+    at: 08:00
+  condition:
+  - condition: device
+    type: is_on
+    device_id: aeb06bd76cdd2fe01e03b42a0c624b3d
+    entity_id: switch.christmas_tree
+    domain: switch
+  action:
+  - type: turn_off
+    device_id: aeb06bd76cdd2fe01e03b42a0c624b3d
+    entity_id: switch.christmas_tree
+    domain: switch
+  mode: single
+- id: '1608267277496'
+  alias: _NOTIFICATION - Notify when outside lights were left on.
+  description: Sends actionable notification when either of the outside lights were
+    left on after both of us have come home.
+  trigger:
+  - platform: state
+    for: 00:05
+    entity_id: binary_sensor.everyone_home
+    to: 'on'
+  condition:
+  - condition: or
+    conditions:
+    - condition: device
+      type: is_on
+      device_id: b5c4ae675c65486eecb97a2819404cd4
+      entity_id: switch.driveway
+      domain: switch
+    - condition: device
+      type: is_on
+      device_id: 212eb3e7bae439c72a947005bb3429cc
+      entity_id: switch.front_porch
+      domain: switch
+  action:
+  - service: notify.mom_and_dad
+    data:
+      title: Oops! Lights were left on!
+      message: What do you want me to do?
+      data:
+        actions:
+        - action: leave_on_lights
+          title: Leave on
+        - action: turn_off_lights
+          title: Turn off
+        - action: off_in_30
+          title: Turn off in 30 min.
+        tag: notify_outside_lights
+  mode: single
+- id: '1608272100830'
+  alias: _ACTION - leave_on_lights
+  description: ''
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: leave_on_lights
+  condition: []
+  action:
+  - service: notify.mom_and_dad
+    data:
+      message: Leaving on lights...
+      data:
+        tag: notify_outside_lights
+  - delay: 00:00:02
+  - service: notify.mom_and_dad
+    data:
+      message: clear_notification
+      data:
+        tag: notify_outside_lights
+  mode: single
+- id: '1608276446184'
+  alias: _ACTION - turn_off_lights
+  description: ''
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: turn_off_lights
+  condition: []
+  action:
+  - service: notify.mom_and_dad
+    data:
+      message: Turning off lights...
+      data:
+        tag: notify_outside_lights
+  - type: turn_off
+    device_id: b5c4ae675c65486eecb97a2819404cd4
+    entity_id: switch.driveway
+    domain: switch
+  - type: turn_off
+    device_id: 212eb3e7bae439c72a947005bb3429cc
+    entity_id: switch.front_porch
+    domain: switch
+  - delay: 00:00:02
+  - service: notify.mom_and_dad
+    data:
+      message: clear_notification
+      data:
+        tag: notify_outside_lights
+  mode: single
+- id: '1608276972284'
+  alias: _ACTION - off_in_30
+  description: ''
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: off_in_30
+  condition: []
+  action:
+  - service: notify.mom_and_dad
+    data:
+      message: Turning off lights in 30 minutes...
+      data:
+        tag: notify_outside_lights
+  - delay: 00:00:02
+  - service: notify.mom_and_dad
+    data:
+      message: clear_notification
+      data:
+        tag: notify_outside_lights
+  - service: timer.start
+    data:
+      entity_id: timer.outside_timer
+  - wait_for_trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.outside_timer
+    continue_on_timeout: false
+  - event: mobile_app_notification_action
+    event_data:
+      action: turn_off_lights
+  mode: single
+- id: '1608337296364'
+  alias: __test
+  description: ''
+  trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: leave_on_lights
+  condition: []
+  action:
+  - service: notify.mobile_app_pixel_5
+    data:
+      message: told to leave on by {{ trigger.event.context.user_id }}
+  mode: single
+- id: '1633903803253'
+  alias: Lava Lamp Auto On
+  description: ''
+  trigger:
+  - platform: time
+    at:
+    - 04:30:00
+    - '18:30:00'
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: device_tracker.pixel_4a
+      state: home
+    - condition: state
+      entity_id: device_tracker.pixel_5
+      state: Home
+  action:
+  - type: turn_on
+    device_id: 8fe16f2309299c040a8e25b07352f1b7
+    entity_id: switch.lava_lamp
+    domain: switch
+  mode: single
+- id: '1633903907077'
+  alias: Lava Lamp Auto Off
+  description: Turn off Lava Lamp after on for 10 hours
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 8fe16f2309299c040a8e25b07352f1b7
+    entity_id: switch.lava_lamp
+    domain: switch
+    for:
+      hours: 4
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8fe16f2309299c040a8e25b07352f1b7
+    entity_id: switch.lava_lamp
+    domain: switch
+  mode: single
+- id: '1635648458649'
+  alias: Bathroom Fan Auto On
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 302c205765cfa5a0cd535523479b50b4
+    entity_id: switch.bathroom_light_2
+    domain: switch
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 1fcd7249c6f66fc3b0f1990ec390aa64
+    entity_id: switch.bathroom_fan
+    domain: switch
+  mode: single
+- id: '1635648680703'
+  alias: Bathroom Fan Auto Timer
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_off
+    device_id: 302c205765cfa5a0cd535523479b50b4
+    entity_id: switch.bathroom_light_2
+    domain: switch
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 1fcd7249c6f66fc3b0f1990ec390aa64
+    entity_id: switch.bathroom_fan
+    domain: switch
+  mode: restart

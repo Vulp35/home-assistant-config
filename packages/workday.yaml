@@ -1,0 +1,5 @@
+# Workday Sensor
+binary_sensor:
+  - platform: workday
+    country: USA
+    province: IA

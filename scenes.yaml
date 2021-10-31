@@ -1,0 +1,70 @@
+- id: '1605720804213'
+  name: Theater
+  entities:
+    light.tv_backlight:
+      effect_list:
+      - Solid
+      - Boblight Server
+      - Platform Capture
+      - USB Capture
+      - Atomic swirl
+      - Blue mood blobs
+      - Breath
+      - Candle
+      - Cinema brighten lights
+      - Cinema dim lights
+      - Cold mood blobs
+      - Collision
+      - Color traces
+      - Double swirl
+      - Fire
+      - Flags Germany/Sweden
+      - Full color mood blobs
+      - Green mood blobs
+      - Knight rider
+      - Led Test
+      - Light clock
+      - Lights
+      - Notify blue
+      - Pac-Man
+      - Plasma
+      - Police Lights Single
+      - Police Lights Solid
+      - Rainbow mood
+      - Rainbow swirl
+      - Rainbow swirl fast
+      - Random
+      - Red mood blobs
+      - Sea waves
+      - Snake
+      - Sparks
+      - Strobe red
+      - Strobe white
+      - Trails
+      - Trails color
+      - Warm mood blobs
+      - Waves with Color
+      - X-Mas
+      supported_color_modes:
+      - hs
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 0
+      - 0
+      rgb_color:
+      - 255
+      - 255
+      - 255
+      xy_color:
+      - 0.323
+      - 0.329
+      effect: Cinema brighten lights
+      friendly_name: TV Backlight
+      icon: mdi:lava-lamp
+      supported_features: 21
+      state: 'on'
+    switch.tv_backlight_component_all:
+      friendly_name: TV Backlight Component All
+      state: 'on'
+  icon: hass:theater

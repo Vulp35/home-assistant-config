@@ -1,0 +1,6 @@
+## this package is used for adding TPLink Kasa lights that wont get found by integration
+
+tplink:
+  discovery: false
+  switch: 
+    - host: 192.168.1.211

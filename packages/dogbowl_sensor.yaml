@@ -1,0 +1,31 @@
+# Sensor for dog bowl weight sensor.
+# Made using The Hook Up's propane video:
+# https://youtu.be/ofHqZJTxBnE
+
+sensor:
+  - platform: mqtt
+    name: "waterbowl_weight"
+    unique_id: "waterbowl_weight"
+    state_topic: "tele/waterbowl/SENSOR"
+    value_template: "{{ (value_json.HX711.WeightRaw | float - -3171) | round(2) }}"
+    unit_of_measurement: "g"
+  - platform: mqtt
+    name: "waterbowl_level"
+    unique_id: "waterbowl_level"
+    state_topic: "tele/waterbowl/SENSOR"
+    value_template: "{{ ((value_json.HX711.WeightRaw | float - -2605) | float / 5313 * 100) | round(2) }}"
+    # value_template: "{{ ((value_json.HX711.WeightRaw | float - -2605) | float / 8619 * 100) | round(2) }}"
+    # value_template: "{{ (((value_json.HX711.WeightRaw | float - -3171) | float - -2513) | float / 8619 * 100) | round(2) }}"
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: "waterbowl_status"
+    unique_id: "waterbowl_status"
+    state_topic: "tele/waterbowl/STATE"
+    value_template: "{{ value_json.Wifi.RSSI }}"
+    unit_of_measurement: "%"
+  - platform: mqtt
+    name: "waterbowl_volume"
+    unique_id: "waterbowl_volume"
+    state_topic: "tele/waterbowl/SENSOR"
+    value_template: "{{ ((value_json.HX711.WeightRaw | float - -2605) | float / 1000) | round(2) }}"
+    unit_of_measurement: "l"

@@ -1,0 +1,12 @@
+- name: Mom_and_Dad
+  platform: group
+  services:
+    - service: mobile_app_pixel_5
+    - service: mobile_app_moto_g_power
+
+- name: all_devices
+  platform: group
+  services:
+    - service: mobile_app_pixel_5
+    - service: mobile_app_moto_g_power
+    - service: mobile_app_family_tablet

@@ -10,7 +10,7 @@ __pycache__
 
 # Directory (contents) ignores
 .cloud
-.storage
+.storage/*
 deps
 core
 image
@@ -40,3 +40,4 @@ esphome/.*/
 
 # Specific keeps
 !.gitkeep
+!.storage/lovelace*
